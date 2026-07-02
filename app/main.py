@@ -5,8 +5,10 @@ from fastapi import FastAPI
 from app.core.config import settings
 from app.core.logger import get_logger
 from app.database.init_db import init_database
+from app.api.router import api_router
 
 logger = get_logger(__name__)
+
 
 
 @asynccontextmanager
@@ -22,7 +24,7 @@ app = FastAPI(
     version=settings.APP_VERSION,
     lifespan=lifespan,
 )
-
+app.include_router(api_router)
 
 @app.get("/")
 def root():
