@@ -1,16 +1,17 @@
 from fastapi import FastAPI
 
+from app.core.config import settings
+
 app = FastAPI(
-    title="SEBI AI Agent",
-    description="Backend API for SEBI TechSprint",
-    version="1.0.0",
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
 )
 
 
 @app.get("/")
 def root():
     return {
-        "message": "SEBI AI Agent Backend is Running",
-        "status": "success",
-        "version": "1.0.0",
+        "application": settings.APP_NAME,
+        "version": settings.APP_VERSION,
+        "debug": settings.DEBUG,
     }
