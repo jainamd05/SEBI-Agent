@@ -1,34 +1,18 @@
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Virtual Environment
 venv/
-.env/
-.venv/
-
-# Environment Variables
 .env
 
-# IDE
-.vscode/
+__pycache__/
+*.pyc
+
+uploads/*
+!uploads/.gitkeep
+
+vectorstore/*
+!vectorstore/.gitkeep
+
+.pytest_cache/
+
 .idea/
+.vscode/
 
-# Uploads
-uploads/
-
-# Vector Database
-vectorstore/
-
-# Database
 *.db
-*.sqlite3
-
-# Logs
-*.log
-
-# OS
-.DS_Store
-Thumbs.db
