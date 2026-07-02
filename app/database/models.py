@@ -48,6 +48,12 @@ class Document(Base):
 
     filepath = Column(String(500), nullable=False)
 
+    file_size = Column(Integer, nullable=False)
+
+    mime_type = Column(String(100), nullable=False)
+
+    is_processed = Column(Boolean, default=False)
+
     uploaded_at = Column(DateTime, default=datetime.utcnow)
 
     owner_id = Column(
