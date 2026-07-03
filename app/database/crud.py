@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-
-from app.core.security import hash_password
+from app.database.models import Document
+# from app.core.security import hash_password
 from app.database.models import User
 from app.schemas.auth import UserRegister
 
@@ -50,15 +50,13 @@ def get_user_by_id(
 def create_user(
     db: Session,
     user_data: UserRegister,
+    hashed_password: str,
 ) -> User:
-    """
-    Create a new user.
-    """
 
     user = User(
         username=user_data.username,
         email=user_data.email,
-        hashed_password=hash_password(user_data.password),
+        hashed_password=hashed_password,
     )
 
     db.add(user)
@@ -66,3 +64,29 @@ def create_user(
     db.refresh(user)
 
     return user
+
+def create_document(
+    db: Session,
+    filename: str,
+    filepath: str,
+    file_size: int,
+    mime_type: str,
+    owner_id: int,
+) -> Document:
+    """
+    Store document metadata.
+    """
+
+    document = Document(
+        filename=filename,
+        filepath=filepath,
+        file_size=file_size,
+        mime_type=mime_type,
+        owner_id=owner_id,
+    )
+
+    db.add(document)
+    db.commit()
+    db.refresh(document)
+
+    return document
