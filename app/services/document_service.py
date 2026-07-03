@@ -9,6 +9,10 @@ from app.core.logger import get_logger
 from app.database.crud import create_document
 from app.services.pdf_service import PDFService
 
+from app.services.chunk_service import ChunkService
+from app.services.embedding_service import EmbeddingService
+from app.services.vector_service import VectorService
+
 logger = get_logger(__name__)
 
 
@@ -69,13 +73,41 @@ class DocumentService:
             owner_id=owner_id,
         )
 
-        extracted_text = PDFService.extract_text(
-            str(file_path)
-        )
+        # Step 1: Extract text
+        extracted_text = PDFService.extract_text(str(file_path))
+
+        # Step 2: Split into chunks
+        chunks = ChunkService.split_text(extracted_text)
 
         logger.info(
-            "Extracted %d characters.",
-            len(extracted_text),
+            "Generated %d text chunks.",
+            len(chunks),
+        )
+
+        # Step 3: Generate embeddings
+        embedding_service = EmbeddingService()
+
+        embeddings = embedding_service.embed_batch(chunks)
+
+        # Step 4: Determine embedding dimension
+        dimension = len(embeddings[0])
+
+        # Step 5: Store vectors
+        vector_service = VectorService(dimension)
+
+        vector_service.add_embeddings(
+            embeddings=embeddings,
+            document_id=document.id,
+            chunks=chunks,
+        )
+
+        document.is_processed = True
+
+        db.commit()
+        db.refresh(document)
+
+        logger.info(
+            "Document indexed successfully."
         )
 
         return document
